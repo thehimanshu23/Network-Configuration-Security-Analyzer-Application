@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CIS Audit Results</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, #4f46e5 0%, transparent 45%),
+                radial-gradient(circle at bottom right, #06b6d4 0%, transparent 45%),
+                #0b1220;
+            color: #e5e7eb;
+            overflow-x: hidden;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(14px);
+            border-radius: 22px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: rgba(229, 231, 235, 0.9);
+        }
+
+        .stat-card {
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 16px;
+            height: 100%;
+            transition: 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+        .btn-super {
+            border-radius: 16px;
+            padding: 12px 14px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-gradient {
+            border: none;
+            background: linear-gradient(135deg, #3b82f6, #22c55e);
+            box-shadow: 0 14px 30px rgba(34, 197, 94, 0.25);
+        }
+
+        .btn-gradient:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        .muted {
+            color: rgba(229, 231, 235, 0.75);
+            font-size: 13px;
+        }
+
+        .list-box {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 18px;
+            padding: 14px;
+        }
+
+        .kv {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            margin-bottom: 10px;
+        }
+
+        .kv b {
+            color: #fff;
+        }
+
+        /* ✅ For long software line readability */
+        .break-text {
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container py-5">
+
+        <!-- HEADER -->
+        <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center gap-2 pill mb-3">
+                <i class="bi bi-shield-check"></i>
+                <span>Audit Completed</span>
+            </div>
+
+            <h1 class="fw-bold mb-1">Audit Results</h1>
+            <p class="muted mb-0">
+                Download reports or view HTML output inside browser.
+            </p>
+        </div>
+
+        <!-- MAIN WRAPPER -->
+        <div class="glass p-4 p-md-5">
+
+            <!-- TOP STATS -->
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="muted mb-1">Detected Device Type</div>
+                        <div class="fs-4 fw-bold text-info">
+                            <i class="bi bi-diagram-3 me-1"></i>{{ device_type }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="muted mb-1">Confidence Level</div>
+                        <div class="fs-4 fw-bold">
+                            {% if confidence == "High" %}
+                            <span class="text-success"><i class="bi bi-check-circle me-1"></i>High</span>
+                            {% elif confidence == "Medium" %}
+                            <span class="text-warning"><i class="bi bi-lightning-charge me-1"></i>Medium</span>
+                            {% else %}
+                            <span class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i>Low</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="muted mb-1">Benchmark Used</div>
+                        <div class="fw-semibold text-light">
+                            <i class="bi bi-file-earmark-code me-1"></i>{{ benchmark }}
+                        </div>
+                        <button class="btn btn-sm btn-outline-light mt-2 rounded-4" onclick="copyBenchmark()">
+                            <i class="bi bi-clipboard"></i> Copy
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ✅ IOS & SOFTWARE INFO -->
+            <div class="row g-3 mb-4">
+                <div class="col-lg-6">
+                    <div class="stat-card">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-cpu me-2"></i>IOS Information</h5>
+
+                        <div class="kv">
+                            <span class="muted">IOS Version</span>
+                            <b class="text-info">{{ ios_version }}</b>
+                        </div>
+
+                        <div class="kv mb-0">
+                            <span class="muted">Device Software Info</span>
+                            <b class="text-light break-text">{{ device_software_info }}</b>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ UPDATED QUICK NOTES -->
+                <div class="col-lg-6">
+                    <div class="stat-card">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-info-circle me-2"></i>Quick Notes</h5>
+                        <div class="muted">
+                            This section shows IOS details extracted from <b>show version</b> output.<br>
+                            If it shows <b>Not Found</b>, your file may not contain software version information.
+                            <br><br>
+
+                            <!-- ✅ Automatic CIS Link -->
+                            <a href="{{ cis_benchmark_url }}" target="_blank"
+                                class="btn btn-sm btn-outline-info rounded-4">
+                                <i class="bi bi-box-arrow-up-right me-1"></i>
+                                Click here to check latest CIS Benchmark
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCORES + SUMMARY -->
+            <div class="row g-3 mb-4">
+                <div class="col-lg-6">
+                    <div class="stat-card">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart me-2"></i>Detection Scores</h5>
+
+                        <div class="kv">
+                            <span class="muted">Router Score</span>
+                            <b class="text-danger">{{ scores.router_score }}</b>
+                        </div>
+                        <div class="kv">
+                            <span class="muted">Switch Score</span>
+                            <b class="text-info">{{ scores.switch_score }}</b>
+                        </div>
+                        <div class="kv mb-0">
+                            <span class="muted">L3 Score</span>
+                            <b class="text-success">{{ scores.l3_score }}</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="stat-card">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-clipboard-data me-2"></i>Audit Summary</h5>
+
+                        <div class="row g-2">
+                            {% for k, v in summary.items() %}
+                            <div class="col-6">
+                                <div class="kv mb-0">
+                                    <span class="muted">{{ k }}</span>
+                                    <b>{{ v }}</b>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="muted mt-3">
+                            Tip: Review all <b class="text-danger">FAIL</b> items first for security hardening.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INDICATORS -->
+            <div class="stat-card mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-search me-2"></i>Detection Indicators</h5>
+                <div class="list-box">
+                    <ul class="mb-0">
+                        {% for i in indicators %}
+                        <li class="mb-1">{{ i }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <a href="/download/{{ csv_file }}" class="btn btn-outline-info btn-super w-100">
+                        <i class="bi bi-download me-2"></i>Download CSV
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/download/{{ html_file }}" class="btn btn-outline-success btn-super w-100">
+                        <i class="bi bi-download me-2"></i>Download HTML
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/view/{{ html_file }}" target="_blank" class="btn btn-gradient btn-super w-100">
+                        <i class="bi bi-globe2 me-2"></i>View HTML Report
+                    </a>
+                </div>
+
+                <div class="col-12 mt-2">
+                    <a href="/" class="btn btn-light btn-super w-100">
+                        <i class="bi bi-arrow-left me-2"></i>Audit Another File
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-center mt-4 muted">
+                CIS Audit Tool • Designed for Security Compliance ✅
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyBenchmark() {
+            const text = "{{ benchmark }}";
+            navigator.clipboard.writeText(text);
+            alert("Benchmark copied: " + text);
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,583 @@
+[
+    {
+        "id": "0.1",
+        "section": "Device Identity",
+        "title": "IOS version identified",
+        "risk": "Info",
+        "type": "regex_capture",
+        "pattern": "(?im)^\\s*version\\s+[0-9A-Za-z().]+\\s*$",
+        "expect": "present",
+        "recommendation": "Ensure IOS version is documented for compliance."
+    },
+    {
+        "id": "1.1",
+        "section": "Device Identity",
+        "title": "Hostname configured",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "(?im)^\\s*hostname\\s+\\S+\\s*$",
+        "expect": "present",
+        "recommendation": "Configure hostname."
+    },
+    {
+        "id": "1.2",
+        "section": "Device Identity",
+        "title": "Domain name configured",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "(?im)^\\s*ip\\s+domain-name\\s+\\S+\\s*$",
+        "expect": "present",
+        "recommendation": "Configure ip domain-name for SSH/PKI."
+    },
+    {
+        "id": "1.3",
+        "section": "Device Identity",
+        "title": "Login banner configured",
+        "risk": "Medium",
+        "type": "banner",
+        "banner_type": "login",
+        "expect": "present",
+        "recommendation": "Configure banner login (legal warning)."
+    },
+    {
+        "id": "1.3a",
+        "section": "Device Identity",
+        "title": "Exec banner configured",
+        "risk": "Low",
+        "type": "banner",
+        "banner_type": "exec",
+        "expect": "present",
+        "recommendation": "Configure banner exec (legal warning)."
+    },
+    {
+        "id": "1.4",
+        "section": "Device Identity",
+        "title": "MOTD banner configured",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "(?im)^\\s*banner\\s+motd\\b",
+        "expect": "present",
+        "recommendation": "Configure banner motd."
+    },
+    {
+        "id": "1.5",
+        "section": "Device Identity",
+        "title": "Service timestamps log datetime enabled",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "(?im)^\\s*service\\s+timestamps\\s+log\\s+datetime\\b",
+        "expect": "present",
+        "recommendation": "Enable timestamps for syslog."
+    },
+    {
+        "id": "1.6",
+        "section": "Device Identity",
+        "title": "Service timestamps debug datetime enabled",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "(?im)^\\s*service\\s+timestamps\\s+debug\\s+datetime\\b",
+        "expect": "manual",
+        "recommendation": "Enable timestamps for debug output if required."
+    },
+    {
+        "id": "1.7",
+        "section": "Device Identity",
+        "title": "Service password-encryption enabled",
+        "risk": "Medium",
+        "type": "regex",
+        "pattern": "(?im)^\\s*service\\s+password-encryption\\b",
+        "expect": "present",
+        "recommendation": "Enable service password-encryption."
+    },
+    {
+        "id": "1.8",
+        "section": "Device Identity",
+        "title": "Enable secret configured",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*enable\\s+secret\\s+\\S+",
+        "expect": "present",
+        "recommendation": "Configure enable secret instead of enable password."
+    },
+    {
+        "id": "2.1",
+        "section": "AAA & Authentication",
+        "title": "AAA new-model enabled",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*aaa\\s+new-model\\b",
+        "expect": "manual",
+        "recommendation": "Enable AAA if centralized authentication is required."
+    },
+    {
+        "id": "2.2",
+        "section": "AAA & Authentication",
+        "title": "Local users exist (username secret)",
+        "risk": "High",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*username\\s+\\S+\\s+.*\\bsecret\\b.*$",
+        "expect": "present",
+        "recommendation": "Create local admin user(s) with secret."
+    },
+    {
+        "id": "2.3",
+        "section": "AAA & Authentication",
+        "title": "No insecure plaintext username password (type 0)",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*username\\s+\\S+\\s+password\\s+0\\s+",
+        "expect": "absent",
+        "recommendation": "Avoid plaintext passwords. Use 'username ... secret'."
+    },
+    {
+        "id": "2.4",
+        "section": "AAA & Authentication",
+        "title": "TACACS server configured",
+        "risk": "High",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*tacacs-server\\s+host\\s+\\S+.*$",
+        "expect": "present",
+        "recommendation": "Configure TACACS+ servers for centralized AAA."
+    },
+    {
+        "id": "2.5",
+        "section": "AAA & Authentication",
+        "title": "RADIUS settings configured",
+        "risk": "Medium",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*radius-server\\s+.*$",
+        "expect": "present",
+        "recommendation": "Configure RADIUS settings securely for AAA accounting/authentication."
+    },
+    {
+        "id": "3.1",
+        "section": "Password & Lockout",
+        "title": "Minimum password length set",
+        "risk": "Medium",
+        "type": "regex",
+        "pattern": "(?im)^\\s*security\\s+passwords\\s+min-length\\s+\\d+\\b",
+        "expect": "manual",
+        "recommendation": "Set minimum password length (10+ recommended)."
+    },
+    {
+        "id": "3.2",
+        "section": "Password & Lockout",
+        "title": "Login block-for enabled (brute-force protection)",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*login\\s+block-for\\s+\\d+\\s+attempts\\s+\\d+\\s+within\\s+\\d+",
+        "expect": "manual",
+        "recommendation": "Enable brute-force protection using login block-for."
+    },
+    {
+        "id": "3.3",
+        "section": "Password & Lockout",
+        "title": "Login on-failure log enabled",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "(?im)^\\s*login\\s+on-failure\\s+log\\b",
+        "expect": "manual",
+        "recommendation": "Log failed login attempts."
+    },
+    {
+        "id": "4.1",
+        "section": "SSH Hardening",
+        "title": "SSH version 2 enabled",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*ip\\s+ssh\\s+version\\s+2\\b",
+        "expect": "present",
+        "recommendation": "Enable SSH v2 only."
+    },
+    {
+        "id": "4.2",
+        "section": "SSH Hardening",
+        "title": "SSH time-out configured",
+        "risk": "Medium",
+        "type": "regex",
+        "pattern": "(?im)^\\s*ip\\s+ssh\\s+time-out\\s+\\d+\\b",
+        "expect": "present",
+        "recommendation": "Configure SSH time-out (e.g., 60 seconds)."
+    },
+    {
+        "id": "4.3",
+        "section": "SSH Hardening",
+        "title": "SSH authentication retries limited",
+        "risk": "Medium",
+        "type": "regex",
+        "pattern": "(?im)^\\s*ip\\s+ssh\\s+authentication-retries\\s+\\d+\\b",
+        "expect": "present",
+        "recommendation": "Limit SSH authentication retries (2-3 recommended)."
+    },
+    {
+        "id": "5.0",
+        "section": "VTY / Remote Access",
+        "title": "VTY full configuration (all VTY blocks)",
+        "risk": "Info",
+        "type": "regex_capture_all",
+        "pattern": "(?ims)^\\s*line\\s+vty\\s+\\d+(?:\\s+\\d+)?\\s*\\n.*?(?=^\\s*!|\\Z)",
+        "expect": "present",
+        "recommendation": "Review full VTY configuration: access-class, ipv6 ACL, authentication, transport input."
+    },
+    {
+        "id": "5.1",
+        "section": "VTY / Remote Access",
+        "title": "VTY transport input SSH only",
+        "risk": "High",
+        "type": "block_present",
+        "block": "line vty",
+        "pattern": "(?im)^\\s*transport\\s+input\\s+ssh\\b",
+        "expect": "present",
+        "recommendation": "Use SSH only on VTY lines."
+    },
+    {
+        "id": "5.2",
+        "section": "VTY / Remote Access",
+        "title": "Telnet disabled on VTY",
+        "risk": "High",
+        "type": "block_absent",
+        "block": "line vty",
+        "pattern": "(?im)^\\s*transport\\s+input.*telnet",
+        "expect": "absent",
+        "recommendation": "Disable telnet on VTY lines."
+    },
+    {
+        "id": "5.3",
+        "section": "VTY / Remote Access",
+        "title": "VTY exec-timeout configured",
+        "risk": "Medium",
+        "type": "block_present",
+        "block": "line vty",
+        "pattern": "(?im)^\\s*exec-timeout\\s+\\d+\\s+\\d+",
+        "expect": "manual",
+        "recommendation": "Set VTY exec-timeout (example: 10 0)."
+    },
+    {
+        "id": "5.4",
+        "section": "VTY / Remote Access",
+        "title": "VTY uses local authentication (login local)",
+        "risk": "High",
+        "type": "block_present",
+        "block": "line vty",
+        "pattern": "(?im)^\\s*login\\s+local\\b",
+        "expect": "manual",
+        "recommendation": "Use login local or AAA on VTY lines."
+    },
+    {
+        "id": "5.5",
+        "section": "VTY / Remote Access",
+        "title": "ACL applied on VTY (access-class in)",
+        "risk": "High",
+        "type": "block_present",
+        "block": "line vty",
+        "pattern": "(?im)^\\s*access-class\\s+\\S+\\s+in\\s*$",
+        "evidence_pattern": "(?im)^\\s*access-class\\s+.*$",
+        "recommendation": "Apply an access-class in to restrict VTY access."
+    },
+    {
+        "id": "6.1",
+        "section": "Logging & Monitoring",
+        "title": "Syslog remote host configured",
+        "risk": "Medium",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*logging\\s+host\\s+\\S+.*$",
+        "expect": "manual",
+        "recommendation": "Configure syslog host."
+    },
+    {
+        "id": "6.2",
+        "section": "Logging & Monitoring",
+        "title": "Logging buffered enabled",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "(?im)^\\s*logging\\s+buffered\\b",
+        "expect": "manual",
+        "recommendation": "Enable buffered logging."
+    },
+    {
+        "id": "7.1",
+        "section": "Time Sync",
+        "title": "NTP server configured",
+        "risk": "Medium",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*ntp\\s+server\\s+\\S+.*$",
+        "expect": "manual",
+        "recommendation": "Configure NTP servers."
+    },
+    {
+        "id": "7.2",
+        "section": "Time Sync",
+        "title": "Clock timezone configured",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "(?im)^\\s*clock\\s+timezone\\s+\\S+\\s+[-+]?\\d+",
+        "expect": "manual",
+        "recommendation": "Configure timezone for correct timestamps."
+    },
+    {
+        "id": "8.1",
+        "section": "SNMP Security",
+        "title": "SNMPv3 configured",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*snmp-server\\s+(group|user).*\\bv3\\b.*$",
+        "expect": "manual",
+        "recommendation": "Use SNMPv3 instead of SNMPv2c."
+    },
+    {
+        "id": "8.2",
+        "section": "SNMP Security",
+        "title": "SNMPv3 groups configured",
+        "risk": "High",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*snmp-server\\s+group\\s+.+\\bv3\\b.*$",
+        "expect": "present",
+        "recommendation": "Use SNMPv3 (auth/priv) for secure monitoring."
+    },
+    {
+        "id": "8.3",
+        "section": "SNMP Security",
+        "title": "SNMP communities configured (v1/v2c)",
+        "risk": "High",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*snmp-server\\s+community\\s+.+$",
+        "expect": "manual",
+        "recommendation": "Avoid SNMPv1/v2c communities, especially RW. Prefer SNMPv3."
+    },
+    {
+        "id": "8.4",
+        "section": "SNMP Security",
+        "title": "SNMP trap destination hosts configured",
+        "risk": "Medium",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*snmp-server\\s+host\\s+\\S+.*$",
+        "expect": "manual",
+        "recommendation": "Verify traps are sent only to trusted monitoring servers."
+    },
+    {
+        "id": "8.5",
+        "section": "SNMP Security",
+        "title": "SNMP inventory info (location/contact/chassis-id)",
+        "risk": "Info",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*snmp-server\\s+(location|contact|chassis-id)\\s+.+$",
+        "expect": "manual",
+        "recommendation": "Verify SNMP location and contact details are updated."
+    },
+    {
+        "id": "8.6",
+        "section": "SNMP Security",
+        "title": "SNMP views configured",
+        "risk": "Low",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*snmp-server\\s+view\\s+.+$",
+        "expect": "manual",
+        "recommendation": "Verify SNMP views limit access to required OIDs only."
+    },
+    {
+        "id": "9.1",
+        "section": "Services Hardening",
+        "title": "HTTP server disabled",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*ip\\s+http\\s+server\\b",
+        "expect": "absent",
+        "recommendation": "Disable ip http server."
+    },
+    {
+        "id": "9.2",
+        "section": "Services Hardening",
+        "title": "Service PAD disabled",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "(?im)^\\s*no\\s+service\\s+pad\\b",
+        "expect": "manual",
+        "recommendation": "Disable PAD service."
+    },
+    {
+        "id": "10.1",
+        "section": "Layer 2 Security (STP)",
+        "title": "Spanning-tree enabled",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*spanning-tree\\b",
+        "expect": "present",
+        "recommendation": "Enable spanning-tree on the switch."
+    },
+    {
+        "id": "10.2",
+        "section": "Layer 2 Security (STP)",
+        "title": "PortFast default enabled (recommended)",
+        "risk": "Medium",
+        "type": "regex",
+        "pattern": "(?im)^\\s*spanning-tree\\s+portfast\\s+default\\b",
+        "expect": "manual",
+        "recommendation": "Enable PortFast on access ports."
+    },
+    {
+        "id": "10.3",
+        "section": "Layer 2 Security (STP)",
+        "title": "BPDU Guard default enabled (recommended)",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*spanning-tree\\s+portfast\\s+bpduguard\\s+default\\b",
+        "expect": "manual",
+        "recommendation": "Enable BPDU Guard to protect STP topology."
+    },
+    {
+        "id": "10.4",
+        "section": "Layer 2 Security (STP)",
+        "title": "Root Guard configured (recommended)",
+        "risk": "Medium",
+        "type": "regex",
+        "pattern": "(?im)^\\s*spanning-tree\\s+guard\\s+root\\b",
+        "expect": "manual",
+        "recommendation": "Enable Root Guard on appropriate ports."
+    },
+    {
+        "id": "10.5",
+        "section": "VLAN Configuration",
+        "title": "All VLAN configuration (vlan / name / remote-span)",
+        "risk": "Info",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*(vlan\\s+\\d+(-\\d+)?(,\\d+(-\\d+)?)*(\\s+.*)?|\\s+name\\s+.+|\\s+remote-span\\b|vlan\\s+configuration\\s+\\d+\\b|vlan\\s+internal\\s+allocation\\s+policy\\s+\\S+)\\s*$",
+        "expect": "present",
+        "recommendation": "Verify VLAN IDs, names, and remote-span configuration as per network design."
+    },
+    {
+        "id": "11.1",
+        "section": "DHCP Snooping & DAI",
+        "title": "DHCP snooping enabled",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*ip\\s+dhcp\\s+snooping\\b",
+        "expect": "manual",
+        "recommendation": "Enable DHCP snooping to block rogue DHCP."
+    },
+    {
+        "id": "11.2",
+        "section": "DHCP Snooping & DAI",
+        "title": "Dynamic ARP Inspection enabled",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*ip\\s+arp\\s+inspection\\b",
+        "expect": "manual",
+        "recommendation": "Enable DAI to prevent ARP spoofing."
+    },
+    {
+        "id": "11.3",
+        "section": "DHCP Snooping & DAI",
+        "title": "IP Source Guard enabled (recommended)",
+        "risk": "Medium",
+        "type": "regex",
+        "pattern": "(?im)^\\s*ip\\s+verify\\s+source\\b",
+        "expect": "manual",
+        "recommendation": "Enable IP Source Guard for access ports."
+    },
+    {
+        "id": "12.1",
+        "section": "Port Security",
+        "title": "Port-security configured (recommended)",
+        "risk": "High",
+        "type": "regex",
+        "pattern": "(?im)^\\s*switchport\\s+port-security\\b",
+        "expect": "manual",
+        "recommendation": "Enable port-security on access ports."
+    },
+    {
+        "id": "13.1",
+        "section": "Layer 3 Switching",
+        "title": "IP routing enabled (L3 mode)",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "^\\s*ip routing\\b",
+        "expect": "present",
+        "recommendation": "Enable ip routing only if the switch is acting as L3."
+    },
+    {
+        "id": "13.1a",
+        "section": "Layer 3 Switching",
+        "title": "IP routing disabled (no ip routing)",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "^\\s*no ip routing\\b",
+        "expect": "absent",
+        "recommendation": "If switch is used for L3 routing, remove 'no ip routing' and enable 'ip routing'."
+    },
+    {
+        "id": "13.2",
+        "section": "Layer 3 Switching",
+        "title": "SVI interfaces exist (L3 VLAN interfaces)",
+        "risk": "Low",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*interface\\s+Vlan\\d+\\b.*$",
+        "expect": "manual",
+        "recommendation": "Verify SVI interface VLAN design."
+    },
+    {
+        "id": "14.1",
+        "section": "Access Control / ACL",
+        "title": "Interface ACL applied (ip access-group)",
+        "risk": "Medium",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*ip\\s+access-group\\s+\\S+\\s+(in|out)\\b.*$",
+        "expect": "manual",
+        "recommendation": "Verify ACL is applied on required interfaces in correct direction (in/out)."
+    },
+    {
+        "id": "14.2",
+        "section": "Access Control / ACL",
+        "title": "Extended ACL defined (ip access-list extended)",
+        "risk": "Low",
+        "type": "regex_capture",
+        "pattern": "(?im)^\\s*ip\\s+access-list\\s+extended\\s+\\S+[\\s\\S]*?(?=^!|\\Z)",
+        "expect": "present",
+        "recommendation": "Verify ACLs are correctly defined and applied on required interfaces."
+    },
+    {
+        "id": "14.3",
+        "section": "Access Control / ACL",
+        "title": "All numbered ACL entries (access-list)",
+        "risk": "Low",
+        "type": "regex_capture_all",
+        "pattern": "(?im)^\\s*access-list\\s+\\d+\\s+(permit|deny)\\b.*$",
+        "expect": "present",
+        "recommendation": "Verify ACL entries are valid and applied where required."
+    },
+    {
+        "id": "15.1",
+        "section": "Operational Controls",
+        "title": "Firmware / IOS up-to-date (manual verification)",
+        "risk": "High",
+        "type": "manual",
+        "recommendation": "Verify IOS/IOS-XE version against Cisco advisories."
+    },
+    {
+        "id": "15.2",
+        "section": "Operational Controls",
+        "title": "Config backups exist externally (manual verification)",
+        "risk": "High",
+        "type": "manual",
+        "recommendation": "Verify secure backups exist (SCP/SFTP/backup server)."
+    },
+    {
+        "id": "16.1",
+        "section": "Services Hardening",
+        "title": "CDP disabled (no cdp run)",
+        "risk": "Medium",
+        "type": "regex",
+        "pattern": "(?im)^\\s*no\\s+cdp\\s+run\\b",
+        "expect": "manual",
+        "recommendation": "Disable CDP unless required."
+    },
+    {
+        "id": "16.2",
+        "section": "Network Stack Hardening",
+        "title": "IPv6 neighbor tracking disabled",
+        "risk": "Low",
+        "type": "regex",
+        "pattern": "(?im)^\\s*no\\s+ipv6\\s+neighbor\\s+tracking\\b",
+        "expect": "manual",
+        "recommendation": "Disable unused IPv6 features if IPv6 is not required."
+    }
+]

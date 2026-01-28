@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CIS Audit Portal</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, #4f46e5 0%, transparent 45%),
+                radial-gradient(circle at bottom right, #06b6d4 0%, transparent 45%),
+                #0b1220;
+            color: #e5e7eb;
+            overflow-x: hidden;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(14px);
+            border-radius: 22px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .brand {
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        .subtitle {
+            color: rgba(229, 231, 235, 0.85);
+        }
+
+        .drop-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.35);
+            border-radius: 18px;
+            padding: 28px;
+            transition: 0.25s ease;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .drop-zone:hover {
+            transform: translateY(-2px);
+            border-color: rgba(59, 130, 246, 0.9);
+            background: rgba(255, 255, 255, 0.09);
+        }
+
+        .hint {
+            font-size: 13px;
+            color: rgba(229, 231, 235, 0.7);
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: rgba(229, 231, 235, 0.9);
+        }
+
+        .btn-super {
+            border-radius: 16px;
+            padding: 12px 14px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-gradient {
+            border: none;
+            background: linear-gradient(135deg, #3b82f6, #22c55e);
+            box-shadow: 0 14px 30px rgba(34, 197, 94, 0.25);
+        }
+
+        .btn-gradient:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        .small-footer {
+            opacity: 0.75;
+            font-size: 13px;
+        }
+
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+        }
+
+        .loader-box {
+            width: 420px;
+            max-width: 92vw;
+            padding: 20px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            text-align: center;
+            color: #fff;
+        }
+
+        .progress {
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .progress-bar {
+            width: 0%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #3b82f6, #22c55e);
+            transition: width 0.3s ease;
+        }
+
+        .file-preview {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container py-5">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+
+                <!-- HEADER -->
+                <div class="mb-4 text-center">
+                    <div class="d-inline-flex align-items-center gap-2 pill mb-3">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Security Compliance • CIS Audit</span>
+                    </div>
+
+                    <h1 class="brand mb-2">CIS Audit Portal</h1>
+                    <p class="subtitle mb-0">
+                        Upload Cisco configs → Auto Detect (Router / L2 Switch / L3 Switch) → Generate Reports
+                    </p>
+                </div>
+
+                <!-- MAIN CARD -->
+                <div class="glass p-4 p-md-5">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="mb-0 fw-bold">
+                            <i class="bi bi-cloud-upload me-2"></i>Upload Configuration
+                        </h4>
+                        <span class="pill">
+                            <i class="bi bi-file-earmark-text"></i> .txt / .cfg / .conf
+                        </span>
+                    </div>
+
+                    <p class="hint mb-3">
+                        Tip: Drag & drop a config file, we’ll analyze and generate CIS report automatically.
+                    </p>
+
+                    <form method="POST" enctype="multipart/form-data" id="uploadForm">
+
+                        <div class="drop-zone" id="dropZone">
+                            <input type="file" name="configfile" id="fileInput" class="form-control d-none" required>
+
+                            <div class="text-center">
+                                <div class="display-6 mb-2">
+                                    <i class="bi bi-folder2-open"></i>
+                                </div>
+                                <div class="fw-semibold">Drop file here or click to browse</div>
+                                <div class="hint mt-1">Max recommended size: 5MB</div>
+                            </div>
+
+                            <div class="file-preview" id="filePreview">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="fw-semibold">
+                                            <i class="bi bi-file-earmark-check me-1"></i>
+                                            <span id="fileName">file.txt</span>
+                                        </div>
+                                        <div class="hint">Size: <span id="fileSize">0 KB</span></div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-light rounded-4" id="removeBtn">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- FLASH MESSAGE -->
+                        {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        <div class="alert alert-danger mt-3 mb-0 rounded-4">
+                            <i class="bi bi-exclamation-triangle me-2"></i>{{ messages[0] }}
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+
+                        <div class="mt-4 d-grid gap-2">
+                            <button type="submit" class="btn btn-gradient btn-super">
+                                <i class="bi bi-play-circle me-2"></i>Run CIS Audit
+                            </button>
+
+                            <div class="text-center small-footer">
+                                Built by PG-DITISS Team-1 • CIS Compliance Automation
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADER OVERLAY -->
+    <div class="loader-overlay" id="loader">
+        <div class="loader-box">
+            <div class="mb-2">
+                <div class="spinner-border text-light" role="status"></div>
+            </div>
+            <h5 class="fw-bold mb-1">Running Audit...</h5>
+            <div class="hint mb-3">Detecting device type and applying benchmarks...</div>
+
+            <div class="progress mb-2">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="hint" id="progressText">Starting...</div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById("dropZone");
+        const fileInput = document.getElementById("fileInput");
+        const uploadForm = document.getElementById("uploadForm");
+
+        const filePreview = document.getElementById("filePreview");
+        const fileName = document.getElementById("fileName");
+        const fileSize = document.getElementById("fileSize");
+        const removeBtn = document.getElementById("removeBtn");
+
+        const loader = document.getElementById("loader");
+        const progressBar = document.getElementById("progressBar");
+        const progressText = document.getElementById("progressText");
+
+        function formatSize(bytes) {
+            const kb = bytes / 1024;
+            if (kb < 1024) return kb.toFixed(1) + " KB";
+            return (kb / 1024).toFixed(2) + " MB";
+        }
+
+        function showPreview(file) {
+            fileName.textContent = file.name;
+            fileSize.textContent = formatSize(file.size);
+            filePreview.style.display = "block";
+        }
+
+        function clearFile() {
+            fileInput.value = "";
+            filePreview.style.display = "none";
+        }
+
+        dropZone.addEventListener("click", () => fileInput.click());
+
+        dropZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = "rgba(34,197,94,0.9)";
+        });
+
+        dropZone.addEventListener("dragleave", () => {
+            dropZone.style.borderColor = "rgba(255,255,255,0.35)";
+        });
+
+        dropZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = "rgba(255,255,255,0.35)";
+
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                fileInput.files = e.dataTransfer.files;
+                showPreview(file);
+            }
+        });
+
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files.length > 0) showPreview(fileInput.files[0]);
+        });
+
+        removeBtn.addEventListener("click", () => {
+            clearFile();
+        });
+
+        uploadForm.addEventListener("submit", () => {
+            loader.style.display = "flex";
+
+            let p = 0;
+            const steps = [
+                "Uploading config...",
+                "Normalizing config...",
+                "Detecting device type...",
+                "Loading benchmark JSON...",
+                "Running CIS rules...",
+                "Generating CSV/HTML reports..."
+            ];
+
+            let stepIndex = 0;
+            progressText.textContent = steps[stepIndex];
+
+            const timer = setInterval(() => {
+                p += 12;
+                if (p > 100) p = 100;
+
+                progressBar.style.width = p + "%";
+
+                if (p % 24 === 0 && stepIndex < steps.length - 1) {
+                    stepIndex++;
+                    progressText.textContent = steps[stepIndex];
+                }
+
+                if (p === 100) {
+                    clearInterval(timer);
+                    progressText.textContent = "Finishing...";
+                }
+            }, 250);
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
