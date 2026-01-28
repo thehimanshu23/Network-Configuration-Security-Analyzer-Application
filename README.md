@@ -1,4 +1,6 @@
 🔐 Network Configuration Security Analyzer Application
+
+
 📘 Project Description
 
 The Network Configuration Security Analyzer Application is a web-based automated compliance auditing tool developed to evaluate Cisco network device configurations against Center for Internet Security (CIS) Benchmarks. The application automates security compliance verification by analyzing configuration files and identifying deviations from industry-recommended security standards.
